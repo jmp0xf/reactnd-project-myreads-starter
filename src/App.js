@@ -27,6 +27,20 @@ class BooksApp extends React.Component {
     })
   }
 
+  moveBook = (book, to) => {
+    if (book.shelf!==to) {
+      BooksAPI.update(book, to).then(res => {
+        const fromShelfName = book.shelf + "Books";
+        const toShelfName = to + "Books";
+        book.shelf = to;
+        this.setState(state => ({
+          [fromShelfName]: state[fromShelfName].filter(b=>b.id!==book.id),
+          [toShelfName]: state[toShelfName].concat([ book ]),
+        }));
+      });
+    }
+  }
+
   render() {
     return (
       <div className="app">
@@ -58,9 +72,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <Shelf title="Currently Reading" books={this.state.currentlyReadingBooks} />
-                <Shelf title="Want to Read" books={this.state.wantToReadBooks} />
-                <Shelf title="Read" books={this.state.readBooks} />
+                <Shelf title="Currently Reading" books={this.state.currentlyReadingBooks} onMoveBook={this.moveBook}/>
+                <Shelf title="Want to Read" books={this.state.wantToReadBooks} onMoveBook={this.moveBook}/>
+                <Shelf title="Read" books={this.state.readBooks} onMoveBook={this.moveBook}/>
               </div>
             </div>
             <div className="open-search">

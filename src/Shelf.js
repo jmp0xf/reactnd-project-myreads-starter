@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 class Shelf extends Component {
     static propTypes = {
         title: PropTypes.string.isRequired,
-        books: PropTypes.array.isRequired
+        books: PropTypes.array.isRequired,
+        onMoveBook: PropTypes.func.isRequired
     }
 
     render() {
@@ -19,7 +20,7 @@ class Shelf extends Component {
                               <div className="book-top">
                                 <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: 'url("'+book.imageLinks.smallThumbnail+'")' }}></div>
                                 <div className="book-shelf-changer">
-                                  <select defaultValue={book.shelf}>
+                                  <select defaultValue={book.shelf} onChange={(event) => this.props.onMoveBook(book, event.target.value)}>
                                     <option value="none" disabled>Move to...</option>
                                     <option value="currentlyReading">Currently Reading</option>
                                     <option value="wantToRead">Want to Read</option>
