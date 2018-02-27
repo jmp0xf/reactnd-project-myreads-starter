@@ -31,13 +31,21 @@ class BooksApp extends React.Component {
 
   moveBook = (book, to) => {
     if (book.shelf!==to) {
-      BooksAPI.update(book, to).then(res => {
-        const fromShelfName = book.shelf + "Books";
-        const toShelfName = to + "Books";
-        book.shelf = to;
-        this.setState(state => ({
-          [fromShelfName]: state[fromShelfName].filter(b=>b.id!==book.id),
-          [toShelfName]: state[toShelfName].concat([ book ]),
+      const fromShelfName = book.shelf + "Books";
+      const toShelfName = to + "Books";
+      const from = book.shelf;
+      book.shelf = to;
+      this.setState(state => ({
+        [fromShelfName]: state[fromShelfName].filter(b=>b.id!==book.id),
+        [toShelfName]: state[toShelfName].concat([ book ]),
+      }));
+      var that = this;
+      BooksAPI.update(book, to).catch(function(err){
+        // Recover the state if network sync fails
+        book.shelf = from;
+        that.setState(state => ({
+          [fromShelfName]: state[fromShelfName].concat([ book ]),
+          [toShelfName]: state[toShelfName].filter(b=>b.id!==book.id),
         }));
       });
     }
