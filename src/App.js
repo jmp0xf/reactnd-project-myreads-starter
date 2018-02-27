@@ -14,7 +14,9 @@ class BooksApp extends React.Component {
     showSearchPage: false,
     currentlyReadingBooks: [],
     wantToReadBooks: [],
-    readBooks: []
+    readBooks: [],
+    noneBooks: [],
+    searchedBooks: []
 
   }
 
@@ -41,6 +43,28 @@ class BooksApp extends React.Component {
     }
   }
 
+  updateQuery = (q) => {
+    BooksAPI.search(q).then(books => {
+      var searchedBooks = books;
+      if (searchedBooks===undefined||searchedBooks===null||searchedBooks.error!==undefined) {
+        searchedBooks = [];
+      }
+      searchedBooks.forEach(book => {
+        if (book.shelf===undefined) {
+          book.shelf = "none";
+          if (this.state.currentlyReadingBooks.filter(b=>b.id===book.id).length!==0) {
+            book.shelf = "currentlyReading";
+          } else if (this.state.wantToReadBooks.filter(b=>b.id===book.id).length!==0) {
+            book.shelf = "wantToRead";
+          } else if (this.state.readBooks.filter(b=>b.id===book.id).length!==0) {
+            book.shelf = "read";
+          }
+        }
+      });
+      this.setState({ searchedBooks });
+    });
+  }
+
   render() {
     return (
       <div className="app">
@@ -57,12 +81,12 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author"/>
+                <input type="text" placeholder="Search by title or author" onChange={(event) => this.updateQuery(event.target.value)} />
 
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <Shelf books={this.state.searchedBooks} onMoveBook={this.moveBook}/>
             </div>
           </div>
         ) : (

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 class Shelf extends Component {
     static propTypes = {
-        title: PropTypes.string.isRequired,
+        title: PropTypes.string,
         books: PropTypes.array.isRequired,
         onMoveBook: PropTypes.func.isRequired
     }
@@ -11,7 +11,7 @@ class Shelf extends Component {
     render() {
         return (
             <div className="bookshelf">
-                  <h2 className="bookshelf-title">{this.props.title}</h2>
+                  {this.props.title?(<h2 className="bookshelf-title">{this.props.title}</h2>):null}
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                         {this.props.books.map((book)=>(
