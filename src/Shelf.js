@@ -1,5 +1,13 @@
 import React from 'react'
 
+const BookCoverStyle = (book) => {
+  return {
+      width: 128,
+      height: 193,
+      backgroundImage: `url(${book.imageLinks?book.imageLinks.smallThumbnail:""})`
+  }
+}
+
 const Shelf = (props) => {
     return <div className="bookshelf">
             {props.title?(<h2 className="bookshelf-title">{props.title}</h2>):null}
@@ -9,7 +17,7 @@ const Shelf = (props) => {
                       <li key={book.id}>
                       <div className="book">
                         <div className="book-top">
-                          <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: 'url("'+(book.imageLinks?book.imageLinks.smallThumbnail:"")+'")' }}></div>
+                          <div className="book-cover" style={BookCoverStyle(book)}></div>
                           <div className="book-shelf-changer">
                             <select defaultValue={book.shelf} onChange={(event) => props.onMoveBook(book, event.target.value)}>
                               <option value="nan" disabled>Move to...</option>
